@@ -10,34 +10,25 @@ function App() {
       "https://api.themoviedb.org/3/movie/now_playing?api_key=f4d043da0bfd25667e6825c40156d398"
     );
     const data = await res.json();
-    //console.log(data.results);
+    //console.log(data);
     setMovies(data.results);
   }
   callAPI();
+
   return (
     <div>
-      <h2>Hello</h2>
+      <h2>Now Plaing in the theater</h2>
       {movies.map((movie) => (
-        <li>{movie.title}</li>
+        <div>
+          <li key={movie.name}>{movie.title}</li>
+          <li key={movie.overview}>{movie.overview}</li>
+          <img
+            src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`}
+            alt={movie.title}
+          ></img>
+        </div>
       ))}
     </div>
-
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
   );
 }
 
