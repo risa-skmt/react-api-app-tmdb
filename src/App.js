@@ -2,6 +2,10 @@
 import "./App.css";
 import { useState } from "react";
 
+// import ImageList from "@mui/material/ImageList";
+// import ImageListItem from "@mui/material/ImageListItem";
+// import ImageListItemBar from "@mui/material/ImageListItemBar";
+
 function App() {
   const [movies, setMovies] = useState([]);
 
@@ -18,16 +22,30 @@ function App() {
   return (
     <div>
       <h2>Now Plaing in the theater</h2>
-      {movies.map((movie) => (
-        <div>
-          <li key={movie.name}>{movie.title}</li>
-          <li key={movie.overview}>{movie.overview}</li>
-          <img
-            src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`}
-            alt={movie.title}
-          ></img>
-        </div>
-      ))}
+      <div className="contents">
+        {/* <ImageList sx={{ width: 900 }} cols={3} gap={11}>
+        {movies.map((movie) => (
+          <ImageListItem key={movie.poster}>
+            <img
+              src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`}
+              alt={movie.title}
+            />
+            <ImageListItemBar title={movie.title} position="below" />
+          </ImageListItem>
+        ))}
+      </ImageList> */}
+
+        {movies.map((movie) => (
+          <div className="content">
+            <img
+              src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`}
+              alt={movie.title}
+            ></img>
+            <p key={movie.name}>{movie.title}</p>
+            {/* <li key={movie.overview}>{movie.overview}</li> */}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
