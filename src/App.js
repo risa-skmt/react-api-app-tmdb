@@ -27,17 +27,24 @@ const App = () => {
   // callAPI();
 
   const [searchWord, setSearchWord] = useState("");
-  const search = () => {
+  const search = (e) => {
+    e.preventDefault();
     const filteredMovies = originalMovies.filter((movie) => {
       return movie.title.toLowerCase().includes(searchWord.toLowerCase());
     });
     setMovies(filteredMovies);
+    setSearchWord("");
   };
   return (
     <div>
       <h2>Now Plaing in the theater</h2>
-      <input onChange={(e) => setSearchWord(e.target.value)} />
-      <button onClick={search}>search</button>
+      <form onSubmit={search}>
+        <input
+          value={searchWord}
+          onChange={(e) => setSearchWord(e.target.value)}
+        />
+        <button>search</button>
+      </form>
       <div className="contents">
         {movies.map((movie) => (
           <div className="content">
