@@ -1,0 +1,23 @@
+body {
+  background-color: rgb(37, 37, 37);
+  text-align: center;
+}
+
+h2 {
+  color: white;
+}
+
+.contents {
+  display: flex;
+  flex-flow: wrap row;
+  justify-content: center;
+}
+
+.content {
+  padding: 18px;
+}
+
+img {
+  width: 80%;
+  height: 80%;
+}
