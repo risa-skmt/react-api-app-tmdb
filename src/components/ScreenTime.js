@@ -3,6 +3,7 @@ import "../css/ScreenTime.css";
 
 const ScreenTime = () => {
   const [movies, setMovies] = useState([]);
+  const [popularMovies, setPopularMovies] = useState([]);
 
   useEffect(() => {
     const fetchedPopularMovies = [];
@@ -27,6 +28,7 @@ const ScreenTime = () => {
       }
 
       setMovies(fetchedPopularMovies);
+      setPopularMovies(fetchedPopularMovies);
     };
     fetchPopularMovies();
   }, []);
@@ -36,8 +38,34 @@ const ScreenTime = () => {
 
   //moviesの各情報取得。時間で制限かけてmoviesに入れる
   const MoviesInfo = async (selectedHour, selectedMinute) => {
-    let allId = movies.map((movie) => movie.id);
+    console.log(movies);
+    console.log(popularMovies);
+    setMovies(popularMovies);
+    console.log(movies);
+    console.log(popularMovies);
+    //時間差の計算
+    const sleepTime = new Date();
+    sleepTime.setHours(
+      parseInt(selectedHour, 10),
+      parseInt(selectedMinute, 10),
+      0,
+      0
+    );
 
+    // sleepTime が現在の時刻より前なら、日にちを1日進める
+    console.log(selectedHour < nowHour);
+    if (selectedHour < nowHour) {
+      sleepTime.setDate(sleepTime.getDate() + 1);
+    }
+    const diff = sleepTime.getTime() - nowDate;
+    console.log(`sleepTime: ${sleepTime}`);
+    console.log(`NowTime: ${today}`);
+    const leftMinute = Math.floor(diff / (60 * 1000));
+    console.log(leftMinute);
+
+    // console.log(movies);
+    let allId = movies.map((movie) => movie.id);
+    // console.log(allId);
     let runtimeFiltered = [];
     for (let k = 1; k < allId.length; k++) {
       let movieId = allId[k];
@@ -50,7 +78,8 @@ const ScreenTime = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        if (data.runtime >= 180) {
+
+        if (data.runtime <= leftMinute && data.runtime !== 0) {
           console.log(data);
           runtimeFiltered.push(data);
         }
@@ -61,9 +90,31 @@ const ScreenTime = () => {
     setMovies(runtimeFiltered);
   };
 
+  //現在時刻取得
+  let today = null;
+  let nowHour = 0;
+  let nowMinute = 0;
+  let nowDate = 0;
+
+  const nowTime = () => {
+    // today = new Date();
+    today = new Date("2023-09-13T22:00:00");
+    console.log(today);
+    nowHour = today.getHours();
+    nowMinute = today.getMinutes();
+    nowDate = today.getTime();
+  };
+
+  //（未）searchがクリックされた時点で停止し、その時の時刻を保持＆表示させたい
+  setInterval(nowTime(), 1000);
+
   return (
     <>
       <h2>Which one is tonight movie?</h2>
+      <p></p>
+      <p>
+        {nowHour}:{nowMinute}
+      </p>
       <select
         value={selectedHour}
         onChange={(e) => setSelectedHour(e.target.value)}
@@ -95,7 +146,7 @@ const ScreenTime = () => {
         {selectedHour}:{selectedMinute}
       </div>
       <div className="contents">
-        {/* 以下、popularMoviesの中身を表示 */}
+        {/* 以下、moviesの中身を表示 */}
         {movies.map((movie) => (
           <div className="content">
             <img
