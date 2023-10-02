@@ -5,6 +5,7 @@ const ScreenTime = () => {
   const [movies, setMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
 
+  //popularMovieを表示
   useEffect(() => {
     const fetchedPopularMovies = [];
     const fetchPopularMovies = async () => {
@@ -26,7 +27,6 @@ const ScreenTime = () => {
           console.error("Error fetching data:", error);
         }
       }
-
       setMovies(fetchedPopularMovies);
       setPopularMovies(fetchedPopularMovies);
     };
@@ -37,12 +37,12 @@ const ScreenTime = () => {
   const [selectedMinute, setSelectedMinute] = useState("");
 
   //moviesの各情報取得。時間で制限かけてmoviesに入れる
-  const MoviesInfo = async (selectedHour, selectedMinute) => {
-    console.log(movies);
-    console.log(popularMovies);
+  const FilteredMovies = async () => {
+    console.log("MoviesInfo is called");
+    console.log(selectedHour);
+    console.log(selectedMinute);
+    setDisplayTime(false);
     setMovies(popularMovies);
-    console.log(movies);
-    console.log(popularMovies);
     //時間差の計算
     const sleepTime = new Date();
     sleepTime.setHours(
@@ -53,19 +53,16 @@ const ScreenTime = () => {
     );
 
     // sleepTime が現在の時刻より前なら、日にちを1日進める
-    console.log(selectedHour < nowHour);
-    if (selectedHour < nowHour) {
+    console.log(selectedHour < currentHour);
+    if (selectedHour < currentHour) {
       sleepTime.setDate(sleepTime.getDate() + 1);
     }
-    const diff = sleepTime.getTime() - nowDate;
-    console.log(`sleepTime: ${sleepTime}`);
-    console.log(`NowTime: ${today}`);
-    const leftMinute = Math.floor(diff / (60 * 1000));
-    console.log(leftMinute);
+    const diff = sleepTime.getTime() - currentDate;
 
-    // console.log(movies);
+    const leftMinute = Math.floor(diff / (60 * 1000));
+    // console.log(leftMinute);
+
     let allId = movies.map((movie) => movie.id);
-    // console.log(allId);
     let runtimeFiltered = [];
     for (let k = 1; k < allId.length; k++) {
       let movieId = allId[k];
@@ -80,7 +77,7 @@ const ScreenTime = () => {
         const data = await response.json();
 
         if (data.runtime <= leftMinute && data.runtime !== 0) {
-          console.log(data);
+          //console.log(data);
           runtimeFiltered.push(data);
         }
       } catch (error) {
@@ -88,32 +85,37 @@ const ScreenTime = () => {
       }
     }
     setMovies(runtimeFiltered);
+    console.log(movies);
   };
 
-  //現在時刻取得
-  let today = null;
-  let nowHour = 0;
-  let nowMinute = 0;
-  let nowDate = 0;
+  //現在時刻の取得を続けるか判定
+  const [displayTime, setDisplayTime] = useState(true);
+  //現在時刻管理
+  const [currentDate, setCurrentDate] = useState("");
+  const [currentHour, setCurrentHour] = useState(0);
+  const [currentMinute, setCurrentMinute] = useState(0);
 
-  const nowTime = () => {
-    // today = new Date();
-    today = new Date("2023-09-13T22:00:00");
-    console.log(today);
-    nowHour = today.getHours();
-    nowMinute = today.getMinutes();
-    nowDate = today.getTime();
-  };
+  useEffect(() => {
+    const currentTime = setInterval(() => {
+      if (displayTime) {
+        //today = new Date("2023-09-13T22:00:00");   //固定値で検証
+        let today = new Date();
+        setCurrentDate(today.getTime());
+        setCurrentHour(today.getHours());
+        setCurrentMinute(today.getMinutes());
+        console.log(today);
+      }
+    }, 1000);
 
-  //（未）searchがクリックされた時点で停止し、その時の時刻を保持＆表示させたい
-  setInterval(nowTime(), 1000);
+    return () => clearInterval(currentTime);
+  }, [displayTime]);
 
   return (
     <>
       <h2>Which one is tonight movie?</h2>
-      <p></p>
+
       <p>
-        {nowHour}:{nowMinute}
+        {currentHour}:{currentMinute}
       </p>
       <select
         value={selectedHour}
@@ -138,13 +140,12 @@ const ScreenTime = () => {
         <option value="45">45</option>
       </select>
       <span>分</span>
-      <button onClick={() => MoviesInfo(selectedHour, selectedMinute)}>
-        search
-      </button>
+      <button onClick={FilteredMovies}>search</button>
 
       <div>
         {selectedHour}:{selectedMinute}
       </div>
+
       <div className="contents">
         {/* 以下、moviesの中身を表示 */}
         {movies.map((movie) => (
@@ -162,7 +163,3 @@ const ScreenTime = () => {
 };
 
 export default ScreenTime;
-
-{
-  /* <li key={movie.overview}>{movie.overview}</li> */
-}
