@@ -21,3 +21,11 @@ img {
   width: 80%;
   height: 80%;
 }
+
+.currentClock {
+  font-family: "Share Tech Mono", monospace;
+  color: #daf6ff;
+  text-shadow: 0 0 20px #3f32fa;
+  line-height: 1.2;
+  font-size: 40px;
+}

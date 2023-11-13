@@ -8,8 +8,8 @@ const App = () => {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<NowPlaying />} />
           <Route path="/screen_time" element={<ScreenTime />} />
+          <Route path="/nowplaying" element={<NowPlaying />} />
         </Routes>
       </Router>
     </div>
