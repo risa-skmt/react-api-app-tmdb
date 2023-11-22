@@ -131,7 +131,7 @@ const ScreenTime = () => {
         currentMinute={currentMinute}
       />
 
-      <p>から</p>
+      <p className="searchBarWord">から</p>
       <select
         value={selectedHour}
         onChange={(e) => setSelectedHour(e.target.value)}
@@ -156,7 +156,7 @@ const ScreenTime = () => {
         <option value="2">2</option>
         <option value="3">3</option>
       </select>
-      <span>時</span>
+      <span className="searchBarWord">時</span>
       <select
         value={selectedMinute}
         onChange={(e) => setSelectedMinute(e.target.value)}
@@ -166,8 +166,9 @@ const ScreenTime = () => {
         <option value="30">30</option>
         <option value="45">45</option>
       </select>
-      <span>分</span>
-      <p>まで</p>
+
+      <span className="searchBarWord">分</span>
+      <p className="searchBarWord">までに観終わる</p>
       <button onClick={FilteredMovies}>search</button>
       {/* <div>
         <select onChange={(e) => setSelectedGenre(e.target.value)}>
