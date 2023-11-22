@@ -38,8 +38,12 @@ const ScreenTime = () => {
   const [selectedHour, setSelectedHour] = useState("21");
   const [selectedMinute, setSelectedMinute] = useState("00");
 
+  //検索中かどうか
+  const [isSearching, setIsSearching] = useState(false);
+
   //moviesの各情報取得。時間で制限かけてmoviesに入れる
   const FilteredMovies = async () => {
+    setIsSearching(true);
     setDisplayTime(false);
     setMovies(popularMovies);
     //時間差の計算
@@ -81,6 +85,7 @@ const ScreenTime = () => {
       }
     }
     setMovies(runtimeFiltered);
+    setIsSearching(false);
     console.log(movies);
   };
 
@@ -91,31 +96,31 @@ const ScreenTime = () => {
   const [currentHour, setCurrentHour] = useState(0);
   const [currentMinute, setCurrentMinute] = useState(0);
 
-  const [selectedGenre, setSelectedGenre] = useState("");
-  const allGenres = [];
-  useEffect(() => {
-    const fetchGenres = async () => {
-      try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        console.log(data.genres);
-        allGenres.push(...data.genres);
-        console.log(allGenres);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchGenres();
-  }, []);
+  //const [selectedGenre, setSelectedGenre] = useState("");
+  // const allGenres = [];
+  // useEffect(() => {
+  //   const fetchGenres = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       const data = await response.json();
+  //       console.log(data.genres);
+  //       allGenres.push(...data.genres);
+  //       console.log(allGenres);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+  //   fetchGenres();
+  // }, []);
 
   return (
     <>
-      <h2>Which one is tonight movie?</h2>
+      <h2>今から観る映画検索</h2>
 
       <CurrentTime
         displayTime={displayTime}
@@ -125,10 +130,24 @@ const ScreenTime = () => {
         currentHour={currentHour}
         currentMinute={currentMinute}
       />
+
+      <p>から</p>
       <select
         value={selectedHour}
         onChange={(e) => setSelectedHour(e.target.value)}
       >
+        <option value="9">21</option>
+        <option value="10">21</option>
+        <option value="11">21</option>
+        <option value="12">21</option>
+        <option value="13">21</option>
+        <option value="14">21</option>
+        <option value="15">21</option>
+        <option value="16">21</option>
+        <option value="17">21</option>
+        <option value="18">21</option>
+        <option value="19">21</option>
+        <option value="20">21</option>
         <option value="21">21</option>
         <option value="22">22</option>
         <option value="23">23</option>
@@ -148,32 +167,36 @@ const ScreenTime = () => {
         <option value="45">45</option>
       </select>
       <span>分</span>
+      <p>まで</p>
       <button onClick={FilteredMovies}>search</button>
-
-      <div>
+      {/* <div>
         <select onChange={(e) => setSelectedGenre(e.target.value)}>
-          {/* {allGenres.map((genre) => (
+          {allGenres.map((genre) => (
             <option value={genre.name}>{genre.name}</option>
-          ))} */}
+          ))}
           {allGenres.map((genre) => (
             <option key={genre.id} value={genre.name}>
               {genre.name}
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       <div className="contents">
         {/* 以下、moviesの中身を表示 */}
-        {movies.map((movie) => (
-          <div key={movie.id} className="content">
-            <img
-              src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`}
-              alt={movie.title}
-            ></img>
-            <p>{movie.title}</p>
-          </div>
-        ))}
+        {isSearching === true ? (
+          <p className="searchCondition">検索中....</p>
+        ) : (
+          movies.map((movie) => (
+            <div key={movie.id} className="content">
+              <img
+                src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`}
+                alt={movie.title}
+              ></img>
+              <p>{movie.title}</p>
+            </div>
+          ))
+        )}
       </div>
     </>
   );

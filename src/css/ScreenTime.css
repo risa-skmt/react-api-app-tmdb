@@ -29,3 +29,8 @@ img {
   line-height: 1.2;
   font-size: 40px;
 }
+
+.searchCondition {
+  color: white;
+  font-size: 30px;
+}
